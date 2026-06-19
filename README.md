@@ -8,14 +8,14 @@ This project documents the steps I took to build a simple Active Directory lab e
 Domain: ADL.local  
 Domain Controller: Windows Server 2022  
 Client Machine: Windows 11  
-Hypervisor: VirtualBox  
+Hypervisor: Oracle VirtualBox  
 
----
+
 
 ## Repository Structure
 
 Below is the full folder tree of all screenshots used in this project.  
-Each folder name is also **clickable** for easy navigation.
+Each folder name is also clickable for easy navigation.
 
 ```
 Screenshots
@@ -40,76 +40,82 @@ Screenshots
 - [7‑Add‑to‑domain](Screenshots/7-Add-to-domain/)
 - [8‑Log‑in‑domain‑user](Screenshots/8-Log-in-domain-user/)
 
----
+
 
 ## 1. Environment Setup (VirtualBox)
 
 I started by creating two virtual machines: one for Windows Server 2022 and one for Windows 11.  
 I configured VirtualBox networking so both machines were on the same internal network and could communicate with each other.
 
-Screenshots: [01‑Environment‑Setup](Screenshots/1-VirtualBox-Set-up/)
+Screenshots: [1‑VirtualBox‑Set‑up](Screenshots/1-VirtualBox-Set-up/)
 
----
 
-## 2. Installing and Configuring Windows Server 2022
 
-After installing Server 2022, I renamed the machine to `DC01`, set a static IP address, and pointed DNS to the server itself. This prepares it for the Active Directory Domain Services role.
+## 2. Installing Windows Server 2022
 
-Screenshots: [02‑Server‑Install‑and‑Config](Screenshots/2-Installing-Windows-Server2022/)
+I installed Windows Server 2022, configured basic settings, and prepared the machine for domain controller promotion.
 
----
+Screenshots: [2‑Installing‑Windows‑Server2022](Screenshots/2-Installing-Windows-Server2022/)
 
-## 3. Installing Active Directory Domain Services
 
-I added the AD DS role through Server Manager and promoted the server to a domain controller.  
-I created a new forest called `lab.local` and rebooted once the setup completed.
 
-Screenshots: [03‑AD‑DS‑Installation](Screenshots/4-Install-AD/)
+## 3. Setting a Static IP Address
 
----
+Before installing Active Directory, I configured a static IP address on the server.  
+This ensures stable DNS and domain controller functionality.
 
-## 4. Creating OUs, Users, and Groups
+Screenshots: [3‑Static‑IP](Screenshots/3-Static-IP/)
 
-Using Active Directory Users and Computers, I created a basic OU structure and added a few test users and groups. This helped organize the domain and made it easier to apply Group Policy later.
 
-Screenshots: [04‑OUs‑Users‑and‑Groups](Screenshots/6-Creating-OU-USERS-GROUPS/)
 
----
+## 4. Installing Active Directory Domain Services (AD DS)
 
-## 5. Setting Up the Windows 11 Client
+I added the AD DS role through Server Manager.  
+This installs the necessary components to promote the server to a domain controller.
 
-I installed Windows 11, renamed the machine, and set the DNS server to the IP address of the domain controller. This is required before joining the domain.
+Screenshots: [4‑Install‑AD](Screenshots/4-Install-AD/)
 
-Screenshots: [05‑Windows11‑Client‑Setup](Screenshots/5-Create-Domain/)
 
----
 
-## 6. Joining the Client to the Domain
+## 5. Creating the Domain (ADL.local)
 
-Once the client could ping the domain controller, I joined it to `lab.local`.  
-After a reboot, I was able to log in using one of the domain accounts I created earlier.
+I promoted the server to a domain controller and created a new directory: ADL.local.  
+After the installation, the server rebooted and became the primary domain controller.
 
-Screenshots: [06‑Join‑Client‑to‑Domain](Screenshots/7-Add-to-domain/)
+Screenshots: [5‑Create‑Domain](Screenshots/5-Create-Domain/)
 
----
 
-## 7. Group Policy Testing
 
-To test Group Policy, I created a new GPO and linked it to one of my OUs.  
-I tried out a few basic settings such as restricting access to the Control Panel and setting a desktop wallpaper.
+## 6. Creating OUs, Users, and Groups
 
-Screenshots: [07‑Group‑Policy‑Examples](Screenshots/7-Add-to-domain/)
+Using Active Directory Users and Computers, I created:
 
----
+- Organizational Units (OUs)  
+- User accounts  
+- User groups  
 
-## 8. Testing and Troubleshooting
+This helps organize the domain and prepares for Group Policy.
 
-I tested logins, DNS resolution, and GPO application.  
-Along the way, I fixed a few common issues such as incorrect DNS settings and time synchronization problems.
+Screenshots: [6‑Creating‑OU‑USERS‑GROUPS](Screenshots/6-Creating-OU-USERS-GROUPS/)
 
-Screenshots: [08‑Testing‑and‑Troubleshooting](Screenshots/8-Log-in-domain-user/)
 
----
+
+## 7. Joining the Windows 11 Client to the Domain
+
+I configured the Windows 11 client to use the domain controller as its DNS server.  
+Once it could resolve the domain, I joined it to ADL.local and logged in using a domain account.
+
+Screenshots: [7‑Add‑to‑domain](Screenshots/7-Add-to-domain/)
+
+
+
+## 8. Logging in as a Domain User
+
+Finally, I tested domain authentication by logging into the Windows 11 client using one of the domain accounts created earlier.
+
+Screenshots: [8‑Log‑in‑domain‑user](Screenshots/8-Log-in-domain-user/)
+
+
 
 ## What I Learned
 
@@ -117,14 +123,3 @@ Screenshots: [08‑Testing‑and‑Troubleshooting](Screenshots/8-Log-in-domain-
 - How DNS works within a domain environment  
 - How to organize users and computers using OUs  
 - How to join a Windows client to a domain  
-- How Group Policy affects users and machines  
-- How to troubleshoot common domain issues  
-
----
-
-## Future Improvements
-
-- Add a file server and test NTFS permissions  
-- Deploy software using Group Policy  
-- Automate user creation with PowerShell  
-- Add more clients or additional server roles  
